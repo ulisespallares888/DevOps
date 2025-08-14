@@ -8,11 +8,11 @@
 		<version>4.0.0-SNAPSHOT</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.DEVOPS</groupId>
-	<artifactId>TP1</artifactId>
+	<groupId>com.TP1</groupId>
+	<artifactId>API</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>TP1</name>
-	<description>Aplicación web y servicio Redis contenerizados</description>
+	<name>API</name>
+	<description>API Rest para TP1</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -36,11 +36,11 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-hateoas</artifactId>
+			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-session-data-redis</artifactId>
+			<artifactId>spring-boot-starter-hateoas</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -66,6 +66,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
