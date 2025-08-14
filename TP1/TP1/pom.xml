@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.DEVOPS</groupId>
-	<artifactId>DEVOPS</artifactId>
+	<artifactId>TP1</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>TP1</name>
 	<description>Aplicación web y servicio Redis contenerizados</description>

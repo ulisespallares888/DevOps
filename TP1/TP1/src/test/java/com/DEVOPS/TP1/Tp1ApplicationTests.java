@@ -1,4 +1,4 @@
-package com.TP1.DEVOPS;
+package com.DEVOPS.TP1;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
