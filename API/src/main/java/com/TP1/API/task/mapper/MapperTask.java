@@ -14,6 +14,7 @@ public interface MapperTask {
     @Mapping(target = "status", source = "status")
     Task TaskRequestDTOToTask(TaskRequestDTO taskRequestDTO);
 
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "title", source = "title")
     @Mapping(target = "description", source = "description")
     @Mapping(target = "status", source = "status")
