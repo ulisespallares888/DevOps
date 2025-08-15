@@ -1,10 +1,10 @@
-package com.TP1.API.task.controller;
+package com.TP1.API.v1.modules.task.controller;
 
-import com.TP1.API.exceptions.exceptions.InvalidRequestException;
-import com.TP1.API.task.dto.PageDTO;
-import com.TP1.API.task.dto.TaskRequestDTO;
-import com.TP1.API.task.dto.TaskResponseDTO;
-import com.TP1.API.task.service.ITaskService;
+import com.TP1.API.v1.exceptions.exceptions.InvalidRequestException;
+import com.TP1.API.v1.modules.task.dto.PageDTO;
+import com.TP1.API.v1.modules.task.dto.TaskRequestDTO;
+import com.TP1.API.v1.modules.task.dto.TaskResponseDTO;
+import com.TP1.API.v1.modules.task.service.ITaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -86,9 +86,8 @@ public class TaskController {
     }
 
     @PutMapping(value = "{id}/complete")
-    public ResponseEntity<Void> completeTask(@Valid @PathVariable Long id, @RequestParam boolean completed) {
-        taskService.completeTask(id, completed);
-        return ResponseEntity.noContent().build();
+    public TaskResponseDTO completeTask(@Valid @PathVariable Long id, @RequestParam boolean completed) {
+        return  taskService.completeTask(id, completed);
     }
 
     private void validate(TaskRequestDTO taskRequestDTO) {

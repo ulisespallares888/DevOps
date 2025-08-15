@@ -1,14 +1,17 @@
-package com.TP1.API.task.service.impl;
+package com.TP1.API.v1.modules.task.service.impl;
 
-import com.TP1.API.exceptions.exceptions.ResourceNotFoundException;
-import com.TP1.API.task.dto.PageDTO;
-import com.TP1.API.task.dto.TaskRequestDTO;
-import com.TP1.API.task.dto.TaskResponseDTO;
-import com.TP1.API.task.mapper.MapperTask;
-import com.TP1.API.task.model.Task;
-import com.TP1.API.task.repository.TaskRepository;
-import com.TP1.API.task.service.ITaskService;
+import com.TP1.API.v1.exceptions.exceptions.ResourceNotFoundException;
+import com.TP1.API.v1.modules.task.dto.PageDTO;
+import com.TP1.API.v1.modules.task.dto.TaskRequestDTO;
+import com.TP1.API.v1.modules.task.dto.TaskResponseDTO;
+import com.TP1.API.v1.modules.task.mapper.MapperTask;
+import com.TP1.API.v1.modules.task.model.Task;
+import com.TP1.API.v1.modules.task.repository.TaskRepository;
+import com.TP1.API.v1.modules.task.service.ITaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -28,14 +31,17 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    public void completeTask(Long id, boolean completed) {
+    @CachePut(value = "task", key = "#id")
+    @CacheEvict(value = "tasks", allEntries = true)
+    public TaskResponseDTO completeTask(Long id, boolean completed) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task no found with ID = %s".formatted(id)));
         task.setCompleted(completed);
         taskRepository.save(task);
+        return MapperTask.INSTANCIA.taskToTaskResponseDTO(task);
     }
 
-    //@Cacheable(value = "tasks", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")
+    @Cacheable(value = "tasks", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")
     public PageDTO<TaskResponseDTO> findAll(Pageable pageable) {
         List<Task> tasks = findAllTasks();
         int start = (int) pageable.getOffset();
@@ -52,7 +58,7 @@ public class TaskServiceImpl implements ITaskService {
 
 
     @Override
-    //@Cacheable(value = "task", key = "#id")
+    @Cacheable(value = "task", key = "#id")
     public TaskResponseDTO findById(Long id) {
         TaskResponseDTO taskResponseDTO = taskRepository.findById(id)
                 .map(MapperTask.INSTANCIA::taskToTaskResponseDTO)
@@ -61,8 +67,8 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    //@CachePut(value = "task", key = "#result.id")
-    //@CacheEvict(value = "tasks", allEntries = true)
+    @CachePut(value = "task", key = "#result.id")
+    @CacheEvict(value = "tasks", allEntries = true)
     public TaskResponseDTO create(TaskRequestDTO userDTORequest) {
         Task task = MapperTask.INSTANCIA.taskRequestDTOToTask(userDTORequest);
         taskRepository.save(task);
@@ -71,7 +77,7 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    //@CacheEvict(value = "tasks", allEntries = true)
+    @CacheEvict(value = "tasks", allEntries = true)
     public void delete(Long id) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task no found with ID = %s".formatted(id)));
@@ -80,8 +86,8 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    //@CachePut(value = "task", key = "#id")
-    //@CacheEvict(value = "tasks", allEntries = true)
+    @CachePut(value = "task", key = "#id")
+    @CacheEvict(value = "tasks", allEntries = true)
     public TaskResponseDTO update(Long id, TaskRequestDTO userDTORequest) {
         Task existingTask = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task no found with ID = %s".formatted(id)));

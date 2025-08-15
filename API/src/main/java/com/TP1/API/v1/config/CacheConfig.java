@@ -1,4 +1,4 @@
-package com.TP1.API.Config;
+package com.TP1.API.v1.config;
 
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;

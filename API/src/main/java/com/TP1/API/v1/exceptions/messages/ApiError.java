@@ -1,4 +1,4 @@
-package com.TP1.API.exceptions.messages;
+package com.TP1.API.v1.exceptions.messages;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

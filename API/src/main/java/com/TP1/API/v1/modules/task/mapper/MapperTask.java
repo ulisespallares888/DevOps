@@ -1,8 +1,8 @@
-package com.TP1.API.task.mapper;
+package com.TP1.API.v1.modules.task.mapper;
 
-import com.TP1.API.task.dto.TaskRequestDTO;
-import com.TP1.API.task.dto.TaskResponseDTO;
-import com.TP1.API.task.model.Task;
+import com.TP1.API.v1.modules.task.dto.TaskRequestDTO;
+import com.TP1.API.v1.modules.task.dto.TaskResponseDTO;
+import com.TP1.API.v1.modules.task.model.Task;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

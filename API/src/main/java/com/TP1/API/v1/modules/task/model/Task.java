@@ -1,4 +1,4 @@
-package com.TP1.API.task.model;
+package com.TP1.API.v1.modules.task.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

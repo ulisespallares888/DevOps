@@ -1,4 +1,4 @@
-package com.TP1.API.exceptions.exceptions;
+package com.TP1.API.v1.exceptions.exceptions;
 
 public class InvalidRequestException extends RuntimeException {
     public InvalidRequestException(String message) {

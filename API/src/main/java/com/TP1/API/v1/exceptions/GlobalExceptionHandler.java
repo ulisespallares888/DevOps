@@ -1,10 +1,10 @@
-package com.TP1.API.exceptions;
+package com.TP1.API.v1.exceptions;
 
 
-import com.TP1.API.exceptions.exceptions.DuplicateResourceException;
-import com.TP1.API.exceptions.exceptions.InvalidRequestException;
-import com.TP1.API.exceptions.exceptions.ResourceNotFoundException;
-import com.TP1.API.exceptions.messages.ApiError;
+import com.TP1.API.v1.exceptions.exceptions.DuplicateResourceException;
+import com.TP1.API.v1.exceptions.exceptions.InvalidRequestException;
+import com.TP1.API.v1.exceptions.exceptions.ResourceNotFoundException;
+import com.TP1.API.v1.exceptions.messages.ApiError;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

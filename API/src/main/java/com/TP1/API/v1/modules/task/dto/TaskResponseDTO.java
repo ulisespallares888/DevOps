@@ -1,4 +1,4 @@
-package com.TP1.API.task.dto;
+package com.TP1.API.v1.modules.task.dto;
 
 import lombok.*;
 
