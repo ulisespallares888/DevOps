@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
         ApiError error = new ApiError(
                 HttpStatus.BAD_REQUEST.value(),
                 "Bad Request",
-                "Formato inválido para el parámetro: " + ex.getName(),
+                "Invalid format to the param: " + ex.getName(),
                 request.getRequestURI()
         );
 
