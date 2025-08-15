@@ -13,8 +13,8 @@ public interface MapperTask {
 
     @Mapping(target = "title", source = "title")
     @Mapping(target = "description", source = "description")
-    @Mapping(target = "completed", source = "completed")
-    Task TaskRequestDTOToTask(TaskRequestDTO taskRequestDTO);
+    @Mapping(target = "completed", constant = "false")
+    Task taskRequestDTOToTask(TaskRequestDTO taskRequestDTO);
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "title", source = "title")

@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class TaskRequestDTO {
      private String title;
      private String description;
-     private boolean completed;
 }
