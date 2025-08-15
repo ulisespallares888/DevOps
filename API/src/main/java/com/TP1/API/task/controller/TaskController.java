@@ -1,6 +1,8 @@
 package com.TP1.API.task.controller;
 
+import com.TP1.API.exceptions.exceptions.InvalidRequestException;
 import com.TP1.API.task.dto.PageDTO;
+import com.TP1.API.task.dto.TaskRequestDTO;
 import com.TP1.API.task.dto.TaskResponseDTO;
 import com.TP1.API.task.service.ITaskService;
 import jakarta.validation.Valid;
@@ -64,4 +66,37 @@ public class TaskController {
         return taskService.findById(id);
     }
 
+    @PostMapping(value = "")
+    public TaskResponseDTO create(@Valid @RequestBody TaskRequestDTO taskRequestDTO) {
+        validate(taskRequestDTO);
+        return taskService.create(taskRequestDTO);
+    }
+
+    @DeleteMapping(value = "{id}")
+    public ResponseEntity<Void> delete(@Valid @PathVariable Long id) {
+        taskService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
+    @PutMapping(value = "{id}")
+    public TaskResponseDTO update(@Valid @PathVariable Long id, @RequestBody TaskRequestDTO taskRequestDTO) {
+        validate(taskRequestDTO);
+        return taskService.update(id, taskRequestDTO);
+    }
+
+    @PutMapping(value = "{id}/complete")
+    public ResponseEntity<Void> completeTask(@Valid @PathVariable Long id, @RequestParam boolean completed) {
+        taskService.completeTask(id, completed);
+        return ResponseEntity.noContent().build();
+    }
+
+    private void validate(TaskRequestDTO taskRequestDTO) {
+        if (taskRequestDTO.getTitle() == null || taskRequestDTO.getTitle().isEmpty()) {
+            throw new InvalidRequestException("Title cannot be null or empty");
+        }
+        if (taskRequestDTO.getDescription() == null || taskRequestDTO.getDescription().isEmpty()) {
+            throw new InvalidRequestException("Description cannot be null or empty");
+        }
+    }
 }

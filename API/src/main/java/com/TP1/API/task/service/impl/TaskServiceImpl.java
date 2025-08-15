@@ -8,9 +8,7 @@ import com.TP1.API.task.mapper.MapperTask;
 import com.TP1.API.task.model.Task;
 import com.TP1.API.task.repository.TaskRepository;
 import com.TP1.API.task.service.ITaskService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +20,20 @@ import java.util.List;
 public class TaskServiceImpl implements ITaskService {
 
     private final TaskRepository taskRepository;
+
+    @Override
+    public List<Task> findAllTasks() {
+        return taskRepository.findAll();
+
+    }
+
+    @Override
+    public void completeTask(Long id, boolean completed) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task no found with ID = %s".formatted(id)));
+        task.setCompleted(completed);
+        taskRepository.save(task);
+    }
 
     //@Cacheable(value = "tasks", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")
     public PageDTO<TaskResponseDTO> findAll(Pageable pageable) {
@@ -37,13 +49,10 @@ public class TaskServiceImpl implements ITaskService {
 
     }
 
-    @Override
-    public List<Task> findAllTasks() {
-        return taskRepository.findAll();
 
-    }
 
     @Override
+    //@Cacheable(value = "task", key = "#id")
     public TaskResponseDTO findById(Long id) {
         TaskResponseDTO taskResponseDTO = taskRepository.findById(id)
                 .map(MapperTask.INSTANCIA::taskToTaskResponseDTO)
@@ -52,19 +61,38 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
+    //@CachePut(value = "task", key = "#result.id")
+    //@CacheEvict(value = "tasks", allEntries = true)
     public TaskResponseDTO create(TaskRequestDTO userDTORequest) {
-        return null;
+        Task task = MapperTask.INSTANCIA.taskRequestDTOToTask(userDTORequest);
+        taskRepository.save(task);
+        TaskResponseDTO taskResponseDTO = MapperTask.INSTANCIA.taskToTaskResponseDTO(task);
+        return taskResponseDTO;
     }
 
     @Override
+    //@CacheEvict(value = "tasks", allEntries = true)
     public void delete(Long id) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task no found with ID = %s".formatted(id)));
+        taskRepository.delete(task);
 
     }
 
     @Override
+    //@CachePut(value = "task", key = "#id")
+    //@CacheEvict(value = "tasks", allEntries = true)
     public TaskResponseDTO update(Long id, TaskRequestDTO userDTORequest) {
-        return null;
+        Task existingTask = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task no found with ID = %s".formatted(id)));
+
+        existingTask = MapperTask.INSTANCIA.taskRequestDTOToTask(userDTORequest);
+        existingTask.setId(id);
+
+        return MapperTask.INSTANCIA.taskToTaskResponseDTO(taskRepository.save(existingTask));
     }
+
+
 
 
 }

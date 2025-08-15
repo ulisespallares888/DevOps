@@ -16,5 +16,6 @@ public interface ITaskService {
     void delete (Long id);
     TaskResponseDTO update(Long id, TaskRequestDTO userDTORequest);
     List<Task> findAllTasks();
+    void completeTask(Long id, boolean completed);
 }
 
