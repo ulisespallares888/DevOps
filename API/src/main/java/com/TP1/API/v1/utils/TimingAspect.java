@@ -19,7 +19,7 @@ public class TimingAspect {
 
         long fin = System.currentTimeMillis();
 
-        log.info("★★★★ {} tardó {} ms ★★★★",joinPoint.getSignature().getName(), fin - inicio);
+        log.info("<[ {} tarda {} ms ]>",joinPoint.getSignature().getName(), fin - inicio);
 
         return resultado;
     }
