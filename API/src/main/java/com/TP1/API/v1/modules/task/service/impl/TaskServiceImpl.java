@@ -50,7 +50,7 @@ public class TaskServiceImpl implements ITaskService {
     }
 
     @Override
-    @Cacheable(value = "tasks", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")
+    @Cacheable(value = "tasks", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString() + '-' + #content")
     public PageDTO<TaskResponseDTO> findAllByTitleOrDescription(Pageable pageable, String content) {
         List<Task> tasks = findAllTasksByTitleOrDescription(content);
         int start = (int) pageable.getOffset();
