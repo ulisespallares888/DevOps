@@ -61,6 +61,35 @@ public class TaskController {
     }
 
 
+    @GetMapping(value = "/search")
+    public ResponseEntity<PagedModel<EntityModel<TaskResponseDTO>>> searchTasks(
+            @RequestParam String content,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(defaultValue = "asc") String direction) {
+
+        Sort sortOrder = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sort).descending()
+                : Sort.by(sort).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+
+        PageDTO<TaskResponseDTO> pageDTO = taskService.findAllByTitleOrDescription(pageable,content);
+
+        Page<TaskResponseDTO> taskResponseDTOPage = new PageImpl<>(
+                pageDTO.getContent(),
+                PageRequest.of(pageDTO.getPage(), pageDTO.getSize(), sortOrder),
+                pageDTO.getTotalElements()
+        );
+
+        if (taskResponseDTOPage.isEmpty()) {
+            return ResponseEntity.ok(PagedModel.empty());
+        }
+
+        return ResponseEntity.ok(toPagedModel(taskResponseDTOPage));
+    }
+
     @GetMapping(value = "{id}")
     public TaskResponseDTO findById(@Valid @PathVariable Long id) {
         return taskService.findById(id);

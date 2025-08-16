@@ -9,6 +9,7 @@ import com.TP1.API.v1.modules.task.model.Task;
 import com.TP1.API.v1.modules.task.repository.TaskRepository;
 import com.TP1.API.v1.modules.task.service.ITaskService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class TaskServiceImpl implements ITaskService {
@@ -39,6 +41,26 @@ public class TaskServiceImpl implements ITaskService {
         task.setCompleted(completed);
         taskRepository.save(task);
         return MapperTask.INSTANCIA.taskToTaskResponseDTO(task);
+    }
+
+    @Override
+    public List<Task> findAllTasksByTitleOrDescription(String content) {
+        List<Task> tasks = taskRepository.findAllByTitleContainingOrDescriptionContaining(content);
+        return tasks;
+    }
+
+    @Override
+    @Cacheable(value = "tasks", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")
+    public PageDTO<TaskResponseDTO> findAllByTitleOrDescription(Pageable pageable, String content) {
+        List<Task> tasks = findAllTasksByTitleOrDescription(content);
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), tasks.size());
+        List<Task> pageContent = new ArrayList<>(tasks.subList(start, end));
+        List<TaskResponseDTO> dtoContent = pageContent.stream()
+                .map(MapperTask.INSTANCIA::taskToTaskResponseDTO)
+                .toList();
+
+        return new PageDTO<>(dtoContent, pageable.getPageNumber(), pageable.getPageSize(), tasks.size());
     }
 
     @Cacheable(value = "tasks", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")

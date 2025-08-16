@@ -17,5 +17,7 @@ public interface ITaskService {
     TaskResponseDTO update(Long id, TaskRequestDTO userDTORequest);
     List<Task> findAllTasks();
     TaskResponseDTO completeTask(Long id, boolean completed);
+    List<Task> findAllTasksByTitleOrDescription(String content);
+    PageDTO<TaskResponseDTO> findAllByTitleOrDescription(Pageable pageable, String content);
 }
 
