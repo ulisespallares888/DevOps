@@ -22,7 +22,7 @@ public class SwaggerConfig {
                                 .url("http://127.0.0.1:8080")
                                 .description("Local server")))
                 .info(new Info()
-                        .title("DevOps Service API")
+                        .title("DevOps TP1 API Module")
                         .description("TP1 API")
                         .version("1.0")
                         .contact(new Contact()
