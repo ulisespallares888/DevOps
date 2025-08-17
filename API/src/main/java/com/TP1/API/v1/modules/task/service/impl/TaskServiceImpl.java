@@ -26,32 +26,37 @@ public class TaskServiceImpl implements ITaskService {
 
     private final TaskRepository taskRepository;
 
-    @Override
+
     public List<Task> findAllTasks() {
         return taskRepository.findAll();
 
     }
 
-    @Override
-    @CachePut(value = "task", key = "#id")
-    @CacheEvict(value = "tasks", allEntries = true)
-    public TaskResponseDTO completeTask(Long id, boolean completed) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Task no found with ID = %s".formatted(id)));
-        task.setCompleted(completed);
-        taskRepository.save(task);
-        return MapperTask.INSTANCIA.taskToTaskResponseDTO(task);
+
+    @Cacheable(value = "tasks", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")
+    public PageDTO<TaskResponseDTO> findAll(Pageable pageable) {
+
+        List<Task> tasks = findAllTasks();
+        int start = (int) pageable.getOffset();
+        int end = Math.min(start + pageable.getPageSize(), tasks.size());
+        List<Task> pageContent = new ArrayList<>(tasks.subList(start, end));
+
+        List<TaskResponseDTO> dtoContent = pageContent.stream()
+                .map(MapperTask.INSTANCIA::taskToTaskResponseDTO)
+                .toList();
+
+        return new PageDTO<>(dtoContent, pageable.getPageNumber(), pageable.getPageSize(), tasks.size());
+
     }
 
-    @Override
     public List<Task> findAllTasksByTitleOrDescription(String content) {
-        List<Task> tasks = taskRepository.findAllByTitleContainingOrDescriptionContaining(content);
-        return tasks;
+        return taskRepository.findAllByTitleContainingOrDescriptionContaining(content);
     }
 
-    @Override
+
     @Cacheable(value = "tasks", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString() + '-' + #content")
     public PageDTO<TaskResponseDTO> findAllByTitleOrDescription(Pageable pageable, String content) {
+
         List<Task> tasks = findAllTasksByTitleOrDescription(content);
         int start = (int) pageable.getOffset();
         int end = Math.min(start + pageable.getPageSize(), tasks.size());
@@ -63,23 +68,7 @@ public class TaskServiceImpl implements ITaskService {
         return new PageDTO<>(dtoContent, pageable.getPageNumber(), pageable.getPageSize(), tasks.size());
     }
 
-    @Cacheable(value = "tasks", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")
-    public PageDTO<TaskResponseDTO> findAll(Pageable pageable) {
-        List<Task> tasks = findAllTasks();
-        int start = (int) pageable.getOffset();
-        int end = Math.min(start + pageable.getPageSize(), tasks.size());
-        List<Task> pageContent = new ArrayList<>(tasks.subList(start, end));
 
-        List<TaskResponseDTO> dtoContent = pageContent.stream()
-                .map(MapperTask.INSTANCIA::taskToTaskResponseDTO)
-                .toList();
-        return new PageDTO<>(dtoContent, pageable.getPageNumber(), pageable.getPageSize(), tasks.size());
-
-    }
-
-
-
-    @Override
     @Cacheable(value = "task", key = "#id")
     public TaskResponseDTO findById(Long id) {
         TaskResponseDTO taskResponseDTO = taskRepository.findById(id)
@@ -88,17 +77,16 @@ public class TaskServiceImpl implements ITaskService {
         return taskResponseDTO;
     }
 
-    @Override
+
     @CachePut(value = "task", key = "#result.id")
     @CacheEvict(value = "tasks", allEntries = true)
     public TaskResponseDTO create(TaskRequestDTO userDTORequest) {
         Task task = MapperTask.INSTANCIA.taskRequestDTOToTask(userDTORequest);
         taskRepository.save(task);
-        TaskResponseDTO taskResponseDTO = MapperTask.INSTANCIA.taskToTaskResponseDTO(task);
-        return taskResponseDTO;
+        return MapperTask.INSTANCIA.taskToTaskResponseDTO(task);
     }
 
-    @Override
+
     @CacheEvict(value = "tasks", allEntries = true)
     public void delete(Long id) {
         Task task = taskRepository.findById(id)
@@ -107,7 +95,7 @@ public class TaskServiceImpl implements ITaskService {
 
     }
 
-    @Override
+
     @CachePut(value = "task", key = "#id")
     @CacheEvict(value = "tasks", allEntries = true)
     public TaskResponseDTO update(Long id, TaskRequestDTO userDTORequest) {
@@ -120,7 +108,14 @@ public class TaskServiceImpl implements ITaskService {
         return MapperTask.INSTANCIA.taskToTaskResponseDTO(taskRepository.save(existingTask));
     }
 
-
-
+    @CachePut(value = "task", key = "#id")
+    @CacheEvict(value = "tasks", allEntries = true)
+    public TaskResponseDTO completeTask(Long id, boolean completed) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task no found with ID = %s".formatted(id)));
+        task.setCompleted(completed);
+        taskRepository.save(task);
+        return MapperTask.INSTANCIA.taskToTaskResponseDTO(task);
+    }
 
 }

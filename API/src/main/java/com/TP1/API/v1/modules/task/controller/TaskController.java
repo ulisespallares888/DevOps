@@ -23,15 +23,24 @@ public class TaskController {
     private final ITaskService taskService;
     private final PagedResourcesAssembler<TaskResponseDTO> pagedResourcesAssembler;
 
+    /*
     private PagedModel<EntityModel<TaskResponseDTO>> toPagedModel(Page<TaskResponseDTO> taskResponseDTOPage) {
-        return pagedResourcesAssembler.toModel(taskResponseDTOPage, taskResponseDTO -> {
-            EntityModel<TaskResponseDTO> taskResponseDTOEntityModelEntityModel = EntityModel.of(taskResponseDTO);
-            taskResponseDTOEntityModelEntityModel.add(
-                    WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TaskController.class)
-                            .findById(taskResponseDTO.getId())).withSelfRel());
-            return taskResponseDTOEntityModelEntityModel;
-        });
+        return pagedResourcesAssembler.toModel(
+                taskResponseDTOPage,
+                taskResponseDTO -> {
+
+                    EntityModel<TaskResponseDTO> taskResponseDTOEntityModelEntityModel = EntityModel.of(taskResponseDTO);
+
+                    taskResponseDTOEntityModelEntityModel.add(
+                            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(TaskController.class)
+                                    .findById(taskResponseDTO.getId())).withSelfRel());
+
+                    return taskResponseDTOEntityModelEntityModel;
+                }
+        );
     }
+
+
     @GetMapping("")
     public ResponseEntity<PagedModel<EntityModel<TaskResponseDTO>>> getAllTasks(
             @RequestParam(defaultValue = "0") int page,
@@ -59,8 +68,26 @@ public class TaskController {
 
         return ResponseEntity.ok(toPagedModel(taskResponseDTOPage));
     }
+    */
+    @GetMapping("")
+    public ResponseEntity<PageDTO<TaskResponseDTO>> getAllTasks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(defaultValue = "asc") String direction) {
 
+        Sort sortOrder = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sort).descending()
+                : Sort.by(sort).ascending();
 
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+
+        PageDTO<TaskResponseDTO> pageDTO = taskService.findAll(pageable);
+
+        return ResponseEntity.ok(pageDTO);
+    }
+
+    /*
     @GetMapping(value = "/search")
     public ResponseEntity<PagedModel<EntityModel<TaskResponseDTO>>> searchTasks(
             @RequestParam String content,
@@ -88,6 +115,26 @@ public class TaskController {
         }
 
         return ResponseEntity.ok(toPagedModel(taskResponseDTOPage));
+    }
+    */
+
+    @GetMapping(value = "/search")
+    public ResponseEntity<PageDTO<TaskResponseDTO>> searchTasks(
+            @RequestParam String content,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sort,
+            @RequestParam(defaultValue = "asc") String direction) {
+
+        Sort sortOrder = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sort).descending()
+                : Sort.by(sort).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sortOrder);
+
+        PageDTO<TaskResponseDTO> pageDTO = taskService.findAllByTitleOrDescription(pageable,content);
+
+        return ResponseEntity.ok(pageDTO);
     }
 
     @GetMapping(value = "{id}")
