@@ -26,17 +26,7 @@ public class TaskServiceImpl implements ITaskService {
 
     private final TaskRepository taskRepository;
 
-
-    public List<Task> findAllTasks() {
-        return taskRepository.findAll();
-
-    }
-
-
-    @Cacheable(value = "tasks", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")
-    public PageDTO<TaskResponseDTO> findAll(Pageable pageable) {
-
-        List<Task> tasks = findAllTasks();
+    private static PageDTO<TaskResponseDTO> getTaskResponseDTOPageDTO(Pageable pageable, List<Task> tasks) {
         int start = (int) pageable.getOffset();
         int end = Math.min(start + pageable.getPageSize(), tasks.size());
         List<Task> pageContent = new ArrayList<>(tasks.subList(start, end));
@@ -46,8 +36,19 @@ public class TaskServiceImpl implements ITaskService {
                 .toList();
 
         return new PageDTO<>(dtoContent, pageable.getPageNumber(), pageable.getPageSize(), tasks.size());
+    }
+
+    public List<Task> findAllTasks() {
+        return taskRepository.findAll();
 
     }
+
+    @Cacheable(value = "tasks", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")
+    public PageDTO<TaskResponseDTO> findAll(Pageable pageable) {
+        List<Task> tasks = findAllTasks();
+        return getTaskResponseDTOPageDTO(pageable, tasks);
+    }
+
 
     public List<Task> findAllTasksByTitleOrDescription(String content) {
         return taskRepository.findAllByTitleContainingOrDescriptionContaining(content);
@@ -56,16 +57,8 @@ public class TaskServiceImpl implements ITaskService {
 
     @Cacheable(value = "tasks", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString() + '-' + #content")
     public PageDTO<TaskResponseDTO> findAllByTitleOrDescription(Pageable pageable, String content) {
-
         List<Task> tasks = findAllTasksByTitleOrDescription(content);
-        int start = (int) pageable.getOffset();
-        int end = Math.min(start + pageable.getPageSize(), tasks.size());
-        List<Task> pageContent = new ArrayList<>(tasks.subList(start, end));
-        List<TaskResponseDTO> dtoContent = pageContent.stream()
-                .map(MapperTask.INSTANCIA::taskToTaskResponseDTO)
-                .toList();
-
-        return new PageDTO<>(dtoContent, pageable.getPageNumber(), pageable.getPageSize(), tasks.size());
+        return getTaskResponseDTOPageDTO(pageable, tasks);
     }
 
 
@@ -92,7 +85,6 @@ public class TaskServiceImpl implements ITaskService {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task no found with ID = %s".formatted(id)));
         taskRepository.delete(task);
-
     }
 
 
