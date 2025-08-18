@@ -2,6 +2,7 @@ package com.TP1.API.v1.modules.task.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class Task {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
