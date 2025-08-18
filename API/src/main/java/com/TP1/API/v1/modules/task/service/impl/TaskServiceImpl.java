@@ -105,7 +105,10 @@ public class TaskServiceImpl implements ITaskService {
     public TaskResponseDTO completeTask(Long id, boolean completed) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task no found with ID = %s".formatted(id)));
-        task.setCompleted(completed);
+
+        task.setCompleted(!task.isCompleted());
+
+        //task.setCompleted(completed);
         taskRepository.save(task);
         return MapperTask.INSTANCIA.taskToTaskResponseDTO(task);
     }
