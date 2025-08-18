@@ -1,4 +1,5 @@
 const BASE_URL = "http://localhost:8080/api/v1/tasks";
+//const BASE_URL = "http://spring-backend:8080/api/v1/tasks";
 
 // 🔧 Normaliza la respuesta HAL en un objeto estándar {content, totalPages, ...}
 export async function getAllTasks(page = 0, size = 10, sort = "id", direction = "asc") {
