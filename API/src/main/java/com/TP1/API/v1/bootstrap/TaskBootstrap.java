@@ -6,18 +6,17 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ResourceUtils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 
 @Slf4j
 @AllArgsConstructor
 @Component
-public class TaskBootstrap  implements CommandLineRunner {
+public class TaskBootstrap implements CommandLineRunner {
 
     private final TaskRepository taskRepository;
 
@@ -30,38 +29,43 @@ public class TaskBootstrap  implements CommandLineRunner {
         log.info("TaskBootstrap completed successfully.");
     }
 
-    public void loadData() throws FileNotFoundException {
-        File file = ResourceUtils.getFile("classpath:data/tasks_data.csv");
+    public void loadData() {
+        try {
+            // Usar ClassPathResource en lugar de ResourceUtils
+            Reader reader = new InputStreamReader(
+                    new ClassPathResource("data/tasks_data.csv").getInputStream()
+            );
 
-        List<TaskRecordDTO> taskRecordDTOS = convertCSV(file);
+            List<TaskRecordDTO> taskRecordDTOS = convertCSV(reader);
 
-        if (taskRepository.count() < 20) {
-            log.info("Loading database with tasks");
-           for (TaskRecordDTO taskRecordDTO : taskRecordDTOS) {
-                taskRepository.save(
-                        Task.builder()
-                                .title(taskRecordDTO.getTitle())
-                                .description(taskRecordDTO.getDescription())
-                                .completed(taskRecordDTO.isCompleted())
-                                .build()
-                );
-                log.info("Task with title '{}' has been saved to the repository.", taskRecordDTO.getTitle());
+            if (taskRepository.count() < 20) {
+                log.info("Loading database with tasks");
+                for (TaskRecordDTO taskRecordDTO : taskRecordDTOS) {
+                    taskRepository.save(
+                            Task.builder()
+                                    .title(taskRecordDTO.getTitle())
+                                    .description(taskRecordDTO.getDescription())
+                                    .completed(taskRecordDTO.isCompleted())
+                                    .build()
+                    );
+                    log.info("Task '{}' saved.", taskRecordDTO.getTitle());
+                }
+            } else {
+                log.info("Task repository already contains sufficient data.");
             }
-            log.info("Task repository has been populated with initial data.");
-        } else {
-            log.info("Task repository already contains sufficient data.");
-        }
 
+        } catch (Exception e) {
+            log.error("Error loading tasks_data.csv", e);
+        }
     }
 
-    public List<TaskRecordDTO> convertCSV(File file) throws FileNotFoundException {
+    public List<TaskRecordDTO> convertCSV(Reader reader) {
         List<TaskRecordDTO> taskRecordDTOS =
-                new CsvToBeanBuilder<TaskRecordDTO>(new FileReader(file))
+                new CsvToBeanBuilder<TaskRecordDTO>(reader)
                         .withType(TaskRecordDTO.class)
                         .build()
                         .parse();
-        log.info("Turning CSV file to developers list");
+        log.info("CSV parsed into TaskRecordDTO list");
         return taskRecordDTOS;
     }
-
 }
