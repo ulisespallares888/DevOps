@@ -56,7 +56,7 @@ jobs:
           done
 
       - name: Build with Maven
-        run: mvn -B clean package --file pom.xml -DskipTests
+        run: cd API && mvn -B clean package --file pom.xml -DskipTests
 
       - name: Run Tests
         env:
