@@ -7,8 +7,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class TaskRequestDTO {
-     private String title;
-     private String description;
-     private boolean completed;
+public class TaskRequestDTOUpdate extends TaskRequestDTO{
+    private boolean completed;
 }

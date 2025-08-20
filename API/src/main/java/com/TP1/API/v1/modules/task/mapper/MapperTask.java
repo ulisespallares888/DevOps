@@ -1,6 +1,7 @@
 package com.TP1.API.v1.modules.task.mapper;
 
 import com.TP1.API.v1.modules.task.dto.TaskRequestDTO;
+import com.TP1.API.v1.modules.task.dto.TaskRequestDTOUpdate;
 import com.TP1.API.v1.modules.task.dto.TaskResponseDTO;
 import com.TP1.API.v1.modules.task.model.Task;
 import org.mapstruct.Mapper;
@@ -21,5 +22,10 @@ public interface MapperTask {
     @Mapping(target = "description", source = "description")
     @Mapping(target = "completed", source = "completed")
     TaskResponseDTO taskToTaskResponseDTO(Task task);
+
+    @Mapping(target = "title", source = "title")
+    @Mapping(target = "description", source = "description")
+    @Mapping(target = "completed", source = "completed")
+    Task taskRequestDTOUpdateToTask(TaskRequestDTOUpdate TaskRequestDTOUpdate);
 
 }

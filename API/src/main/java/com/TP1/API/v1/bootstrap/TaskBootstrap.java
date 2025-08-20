@@ -24,7 +24,7 @@ public class TaskBootstrap implements CommandLineRunner {
     public void run(String... args) throws Exception {
         log.info("Running TaskBootstrap");
 
-        loadData();
+        //loadData();
 
         log.info("TaskBootstrap completed successfully.");
     }

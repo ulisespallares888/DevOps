@@ -3,6 +3,7 @@ package com.TP1.API.v1.modules.task.service.impl;
 import com.TP1.API.v1.exceptions.exceptions.ResourceNotFoundException;
 import com.TP1.API.v1.modules.task.dto.PageDTO;
 import com.TP1.API.v1.modules.task.dto.TaskRequestDTO;
+import com.TP1.API.v1.modules.task.dto.TaskRequestDTOUpdate;
 import com.TP1.API.v1.modules.task.dto.TaskResponseDTO;
 import com.TP1.API.v1.modules.task.mapper.MapperTask;
 import com.TP1.API.v1.modules.task.model.Task;
@@ -90,11 +91,11 @@ public class TaskServiceImpl implements ITaskService {
 
     @CachePut(value = "task", key = "#id")
     @CacheEvict(value = "tasks", allEntries = true)
-    public TaskResponseDTO update(Long id, TaskRequestDTO userDTORequest) {
+    public TaskResponseDTO update(Long id, TaskRequestDTOUpdate taskRequestDTOUpdate) {
         Task existingTask = taskRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Task no found with ID = %s".formatted(id)));
 
-        existingTask = MapperTask.INSTANCIA.taskRequestDTOToTask(userDTORequest);
+        existingTask = MapperTask.INSTANCIA.taskRequestDTOUpdateToTask(taskRequestDTOUpdate);
         existingTask.setId(id);
 
         return MapperTask.INSTANCIA.taskToTaskResponseDTO(taskRepository.save(existingTask));

@@ -3,6 +3,7 @@ package com.TP1.API.v1.modules.task.controller;
 import com.TP1.API.v1.exceptions.exceptions.InvalidRequestException;
 import com.TP1.API.v1.modules.task.dto.PageDTO;
 import com.TP1.API.v1.modules.task.dto.TaskRequestDTO;
+import com.TP1.API.v1.modules.task.dto.TaskRequestDTOUpdate;
 import com.TP1.API.v1.modules.task.dto.TaskResponseDTO;
 import com.TP1.API.v1.modules.task.service.ITaskService;
 import jakarta.validation.Valid;
@@ -12,6 +13,7 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -145,6 +147,7 @@ public class TaskController {
     }
 
     @PostMapping(value = "")
+    @ResponseStatus(HttpStatus.CREATED)
     public TaskResponseDTO create(@Valid @RequestBody TaskRequestDTO taskRequestDTO) {
         validate(taskRequestDTO);
         return taskService.create(taskRequestDTO);
@@ -158,9 +161,9 @@ public class TaskController {
 
 
     @PutMapping(value = "{id}")
-    public TaskResponseDTO update(@Valid @PathVariable Long id, @RequestBody TaskRequestDTO taskRequestDTO) {
-        validate(taskRequestDTO);
-        return taskService.update(id, taskRequestDTO);
+    public TaskResponseDTO update(@Valid @PathVariable Long id, @RequestBody TaskRequestDTOUpdate taskRequestDTOUpdate) {
+        validate(taskRequestDTOUpdate);
+        return taskService.update(id, taskRequestDTOUpdate);
     }
 
     @PutMapping(value = "{id}/complete")

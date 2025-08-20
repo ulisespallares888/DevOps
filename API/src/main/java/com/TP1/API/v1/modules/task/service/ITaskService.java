@@ -3,6 +3,7 @@ package com.TP1.API.v1.modules.task.service;
 
 import com.TP1.API.v1.modules.task.dto.PageDTO;
 import com.TP1.API.v1.modules.task.dto.TaskRequestDTO;
+import com.TP1.API.v1.modules.task.dto.TaskRequestDTOUpdate;
 import com.TP1.API.v1.modules.task.dto.TaskResponseDTO;
 import com.TP1.API.v1.modules.task.model.Task;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +15,7 @@ public interface ITaskService {
     TaskResponseDTO findById(Long id);
     TaskResponseDTO create(TaskRequestDTO userDTORequest)  ;
     void delete (Long id);
-    TaskResponseDTO update(Long id, TaskRequestDTO userDTORequest);
+    TaskResponseDTO update(Long id, TaskRequestDTOUpdate taskRequestDTOUpdate);
     List<Task> findAllTasks();
     TaskResponseDTO completeTask(Long id, boolean completed);
     List<Task> findAllTasksByTitleOrDescription(String content);
