@@ -27,6 +27,22 @@ class TaskControllerWithDBTest {
     @Autowired
     private TaskRepository taskRepository;
 
+
+    @Test
+    @Rollback
+    void getAllTasksIntegrationTest() throws Exception {
+        Task task1 = taskRepository.save(new Task(null, "Task 1", "Description 1", false));
+        Task task2 = taskRepository.save(new Task(null, "Task 2", "Description 2", true));
+
+
+        mockMvc.perform(get("/api/v1/tasks"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$._embedded.taskResponseDTOList.length()").value(2))
+                .andExpect(jsonPath("$._embedded.taskResponseDTOList[0].title").value("Task 1"))
+                .andExpect(jsonPath("$._embedded.taskResponseDTOList[1].title").value("Task 2"));
+    }
+
+
     @Test
     @Rollback
     void createTaskIntegrationTest() throws Exception {
@@ -44,20 +60,7 @@ class TaskControllerWithDBTest {
                 .andExpect(jsonPath("$.completed").value(false));
     }
 
-    @Test
-    @Rollback
-    void getAllTasksIntegrationTest() throws Exception {
-        // Crear tareas en la BD para este test
-        Task task1 = taskRepository.save(new Task(null, "Task 1", "Description 1", false));
-        Task task2 = taskRepository.save(new Task(null, "Task 2", "Description 2", true));
 
-
-        mockMvc.perform(get("/api/v1/tasks"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$._embedded.taskResponseDTOList.length()").value(2))
-                .andExpect(jsonPath("$._embedded.taskResponseDTOList[0].title").value("Task 1"))
-                .andExpect(jsonPath("$._embedded.taskResponseDTOList[1].title").value("Task 2"));
-    }
 
     @Test
     @Rollback
