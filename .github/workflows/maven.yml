@@ -69,4 +69,4 @@ jobs:
 
       # Opcional: subir el grafo de dependencias a GitHub
       - name: Update dependency graph
-        uses: advanced-security/maven-dependency-submission-action@v4
+        uses:  cd API && advanced-security/maven-dependency-submission-action@v4
