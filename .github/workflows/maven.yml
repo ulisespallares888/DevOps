@@ -65,7 +65,7 @@ jobs:
           SPRING_DATASOURCE_PASSWORD: root
           SPRING_REDIS_HOST: 127.0.0.1
           SPRING_REDIS_PORT: 6379
-        run: mvn test
+        run: cd API && mvn test
 
       # Opcional: subir el grafo de dependencias a GitHub
       - name: Update dependency graph
