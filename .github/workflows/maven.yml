@@ -67,6 +67,3 @@ jobs:
           SPRING_REDIS_PORT: 6379
         run: cd API && mvn test
 
-      # Opcional: subir el grafo de dependencias a GitHub
-      - name: Update dependency graph
-        uses:  cd API && advanced-security/maven-dependency-submission-action@v4
