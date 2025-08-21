@@ -1,0 +1,32 @@
+name: Deploy to Production Render
+
+# Este workflow se ejecuta solo cuando hay push a main
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Clonamos el repositorio principal
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Opcional: configurar JDK o Node si tu app lo necesita
+      # - name: Set up JDK 17
+      #   uses: actions/setup-java@v4
+      #   with:
+      #     java-version: '17'
+      #     distribution: 'temurin'
+
+      # Despliegue en Render
+      - name: Deploy to production
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.MY_RENDER_SERVICE_ID }}
+          api-key: ${{ secrets.MY_RENDER_API_KEY }}
+          wait-for-success: true
+
