@@ -2,9 +2,8 @@ name: Deploy to Production Render
 
 # Este workflow se ejecuta solo cuando hay push a main
 on:
-  push:
-    branches:
-      - main
+  workflow_call:
+
 
 jobs:
   deploy:

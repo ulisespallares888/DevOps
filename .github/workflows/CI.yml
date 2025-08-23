@@ -68,3 +68,6 @@ jobs:
           SPRING_REDIS_PORT: 6379
         run: cd API && mvn test
 
+  deploy:
+    needs: build-test
+    uses: ./.github/workflows/Deploy.yml
