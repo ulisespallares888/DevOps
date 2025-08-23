@@ -47,7 +47,7 @@ services:
 
   frontend:
     build:
-      context: ./WebPage
+      context: webpage
     container_name: react-frontend
     depends_on:
       - backend
