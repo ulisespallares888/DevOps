@@ -6,6 +6,7 @@ import com.TP1.API.v1.modules.task.dto.TaskRequestDTO;
 import com.TP1.API.v1.modules.task.dto.TaskRequestDTOUpdate;
 import com.TP1.API.v1.modules.task.dto.TaskResponseDTO;
 import com.TP1.API.v1.modules.task.model.Task;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -16,9 +17,7 @@ public interface ITaskService {
     TaskResponseDTO create(TaskRequestDTO userDTORequest)  ;
     void delete (Long id);
     TaskResponseDTO update(Long id, TaskRequestDTOUpdate taskRequestDTOUpdate);
-    List<Task> findAllTasks();
     TaskResponseDTO completeTask(Long id, boolean completed);
-    List<Task> findAllTasksByTitleOrDescription(String content);
     PageDTO<TaskResponseDTO> findAllByTitleOrDescription(Pageable pageable, String content);
 }
 

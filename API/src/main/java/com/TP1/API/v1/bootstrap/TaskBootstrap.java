@@ -6,9 +6,9 @@ import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
-
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.List;
@@ -16,6 +16,7 @@ import java.util.List;
 @Slf4j
 @AllArgsConstructor
 @Component
+@Profile({"dev", "local"})
 public class TaskBootstrap implements CommandLineRunner {
 
     private final TaskRepository taskRepository;
@@ -24,7 +25,7 @@ public class TaskBootstrap implements CommandLineRunner {
     public void run(String... args) throws Exception {
         log.info("Running TaskBootstrap");
 
-        //loadData();
+        loadData();
 
         log.info("TaskBootstrap completed successfully.");
     }

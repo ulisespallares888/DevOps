@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -39,27 +40,39 @@ public class TaskServiceImpl implements ITaskService {
         return new PageDTO<>(dtoContent, pageable.getPageNumber(), pageable.getPageSize(), tasks.size());
     }
 
-    public List<Task> findAllTasks() {
-        return taskRepository.findAll();
-
-    }
 
     @Cacheable(value = "tasks", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")
     public PageDTO<TaskResponseDTO> findAll(Pageable pageable) {
-        List<Task> tasks = findAllTasks();
-        return getTaskResponseDTOPageDTO(pageable, tasks);
+        Page<Task> taskPage = taskRepository.findAll(pageable);
+
+        List<TaskResponseDTO> dtoContent = taskPage.getContent().stream()
+                .map(MapperTask.INSTANCIA::taskToTaskResponseDTO)
+                .toList();
+
+        return new PageDTO<>(
+                dtoContent,
+                taskPage.getNumber(),
+                taskPage.getSize(),
+                taskPage.getTotalElements()
+        );
     }
 
-
-    public List<Task> findAllTasksByTitleOrDescription(String content) {
-        return taskRepository.findAllByTitleContainingOrDescriptionContaining(content);
-    }
 
 
     @Cacheable(value = "tasks", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString() + '-' + #content")
     public PageDTO<TaskResponseDTO> findAllByTitleOrDescription(Pageable pageable, String content) {
-        List<Task> tasks = findAllTasksByTitleOrDescription(content);
-        return getTaskResponseDTOPageDTO(pageable, tasks);
+        Page<Task> taskPage = taskRepository.findAllByTitleContainingOrDescriptionContaining(pageable, content);
+
+        List<TaskResponseDTO> dtoContent = taskPage.getContent().stream()
+                .map(MapperTask.INSTANCIA::taskToTaskResponseDTO)
+                .toList();
+
+        return new PageDTO<>(
+                dtoContent,
+                taskPage.getNumber(),
+                taskPage.getSize(),
+                taskPage.getTotalElements()
+        );
     }
 
 
