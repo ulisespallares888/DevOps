@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 @AllArgsConstructor
 @Component
-@Profile({"dev", "local"})
+@Profile({"dev"})
 public class TaskBootstrap implements CommandLineRunner {
 
     private final TaskRepository taskRepository;
