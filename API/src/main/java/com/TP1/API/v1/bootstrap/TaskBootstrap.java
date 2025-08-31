@@ -37,6 +37,7 @@ public class TaskBootstrap implements CommandLineRunner {
                     new ClassPathResource("data/tasks_data.csv").getInputStream()
             );
 
+
             List<TaskRecordDTO> taskRecordDTOS = convertCSV(reader);
 
             if (taskRepository.count() < 20) {
