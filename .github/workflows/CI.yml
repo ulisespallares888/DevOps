@@ -70,4 +70,5 @@ jobs:
 
   deploy:
     needs: build-test
+    if: ${{ success() }} 
     uses: ./.github/workflows/Deploy.yml
