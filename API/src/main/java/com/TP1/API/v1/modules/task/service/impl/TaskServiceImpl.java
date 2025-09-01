@@ -28,18 +28,6 @@ public class TaskServiceImpl implements ITaskService {
 
     private final TaskRepository taskRepository;
 
-    private static PageDTO<TaskResponseDTO> getTaskResponseDTOPageDTO(Pageable pageable, List<Task> tasks) {
-        int start = (int) pageable.getOffset();
-        int end = Math.min(start + pageable.getPageSize(), tasks.size());
-        List<Task> pageContent = new ArrayList<>(tasks.subList(start, end));
-
-        List<TaskResponseDTO> dtoContent = pageContent.stream()
-                .map(MapperTask.INSTANCIA::taskToTaskResponseDTO)
-                .toList();
-
-        return new PageDTO<>(dtoContent, pageable.getPageNumber(), pageable.getPageSize(), tasks.size());
-    }
-
 
     @Cacheable(value = "tasks", key = "#pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort.toString()")
     public PageDTO<TaskResponseDTO> findAll(Pageable pageable) {
