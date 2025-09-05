@@ -73,9 +73,8 @@ jobs:
           CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
         run: |
           curl -Ls https://coverage.codacy.com/get.sh | bash
-          java -jar codacy-coverage-reporter-*.jar report \
-            -l Java \
-            -r API/target/site/jacoco/jacoco.xml
+          REPORTER=$(ls ~/.cache/codacy/coverage-reporter/*/codacy-coverage-reporter)
+          $REPORTER report -l Java -r API/target/site/jacoco/jacoco.xml
 
   deploy:
     needs: build-test
