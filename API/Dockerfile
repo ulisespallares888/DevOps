@@ -1,17 +1,13 @@
 # =============================
 # Etapa 1: Build del jar con Maven
 # =============================
-FROM maven:3.9.2-eclipse-temurin-17 AS build
+FROM maven:3.9.9-eclipse-temurin-23 AS build
 WORKDIR /app
 
-
 COPY pom.xml .
-RUN mvn dependency:go-offline
-
+RUN mvn dependency:resolve dependency:resolve-plugins
 
 COPY src ./src
-
-
 RUN mvn clean package -DskipTests
 
 # =============================
@@ -20,14 +16,14 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:23-jdk-alpine
 WORKDIR /app
 
+COPY --from=build /app/target/*.jar API.jar
 
-COPY --from=build /app/target/API-0.0.1-SNAPSHOT.jar API.jar
+# Argumento para el perfil (build-time)
+ARG PROFILE=prod
 
-
-ENV SPRING_PROFILES_ACTIVE=prod
-
+# Lo guardo como variable de entorno en la imagen (runtime)
+ENV SPRING_PROFILES_ACTIVE=$PROFILE
 
 EXPOSE 8080
 
-
-ENTRYPOINT ["java","-jar","API.jar","--spring.profiles.active=prod"]
+ENTRYPOINT ["java", "-jar", "API.jar"]

@@ -38,7 +38,7 @@ services:
       redis:
         condition: service_started
     environment:
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: dev
     ports:
       - '8080:8080'
     restart: unless-stopped
