@@ -27,6 +27,11 @@ services:
       - redis-data:/data
     networks:
       - backend_net
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   backend:
     build:
@@ -38,7 +43,7 @@ services:
       redis:
         condition: service_started
     environment:
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: docker-compose
     ports:
       - '8080:8080'
     restart: unless-stopped
