@@ -76,7 +76,7 @@ jobs:
           REPORTER=$(ls ~/.cache/codacy/coverage-reporter/*/codacy-coverage-reporter)
           $REPORTER report -l Java -r API/target/site/jacoco/jacoco.xml
 
-  deploy:
-    needs: build-test
-    if: ${{ success() }} 
-    uses: ./.github/workflows/Deploy.yml
+  #deploy:
+  #  needs: build-test
+  #  if: ${{ success() }}
+  #  uses: ./.github/workflows/Deploy.yml
