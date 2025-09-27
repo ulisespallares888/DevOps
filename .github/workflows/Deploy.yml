@@ -1,7 +1,6 @@
 name: Deploy to Azure Container Apps
 
 on:
-  workflow_call:
   workflow_dispatch:
 
 jobs:
