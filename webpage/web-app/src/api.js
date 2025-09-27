@@ -1,5 +1,9 @@
-const BASE_URL = "http://localhost:8080/api/v1/tasks";
-//const BASE_URL = "http://spring-backend:8080/api/v1/tasks";
+// Local
+// const BASE_URL = "http://localhost:8080/api/v1/tasks";
+// docker-compose
+// const BASE_URL = "http://spring-backend:8080/api/v1/tasks";
+//Production (Azure)
+const BASE_URL = "https://myappbackv2.wonderfulsmoke-58b10cf6.eastus.azurecontainerapps.io/api/v1/tasks";
 
 // 🔧 Normaliza la respuesta HAL en un objeto estándar {content, totalPages, ...}
 export async function getAllTasks(page = 0, size = 10, sort = "id", direction = "desc") {
