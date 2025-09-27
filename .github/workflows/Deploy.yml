@@ -18,7 +18,7 @@ jobs:
       - name: Deploy Container App
         run: |
           az containerapp create \
-            --name myappbackv2test \
+            --name myappbackv2 \
             --resource-group DEVOPS \
             --environment enviromentdevops \
             --image ulises647/myapp:prod \
