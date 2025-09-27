@@ -1,20 +1,39 @@
-name: Deploy to Production Render
+name: Deploy to Azure Container Apps
 
 on:
   workflow_call:
   workflow_dispatch:
 
 jobs:
-  render-deploy:
+  deploy:
     runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy to production
-        uses: johnbeynon/render-deploy-action@v0.0.8
+      - name: Azure Login with OIDC
+        uses: azure/login@v2
         with:
-          service-id: ${{ secrets.MY_RENDER_SERVICE_ID }}
-          api-key: ${{ secrets.MY_RENDER_API_KEY }}
-          wait-for-success: true
+          client-id: b24abb0e-a73a-4ac3-a99d-3001d9ce5e13
+          tenant-id: 35e9cd03-43d0-4947-b582-a6965c4cb674
+          subscription-id: 3443703f-3284-4678-812d-266b7257f1e8
+
+      - name: Deploy Container App
+        run: |
+          az containerapp create \
+            --name myappbackv2 \
+            --resource-group DEVOPS \
+            --environment enviromentdevops \
+            --image ulises647/myapp:prod \
+            --cpu 1 \
+            --memory 2Gi \
+            --ingress external \
+            --target-port 8080 \
+            --registry-server index.docker.io \
+            --registry-username ${{ secrets.DOCKER_USERNAME }} \
+            --registry-password ${{ secrets.DOCKER_PASSWORD }}
