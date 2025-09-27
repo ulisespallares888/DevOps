@@ -85,8 +85,8 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ulises647/myapp_backend:1.0  ./API
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/myapp_backend:1.0  ./API
 
       - name: Push Docker image
         run: |
-          docker push ulises647/myapp_backend:1.0 
+          docker push ${{ secrets.DOCKER_USERNAME }}/myapp_backend:1.0 
