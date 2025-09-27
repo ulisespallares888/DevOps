@@ -7,20 +7,13 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    permissions:
-      id-token: write
-      contents: read
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Azure Login with OIDC
+      - name: Azure Login
         uses: azure/login@v2
         with:
-          client-id: b24abb0e-a73a-4ac3-a99d-3001d9ce5e13
-          tenant-id: 35e9cd03-43d0-4947-b582-a6965c4cb674
-          subscription-id: 3443703f-3284-4678-812d-266b7257f1e8
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy Container App
         run: |
@@ -36,3 +29,4 @@ jobs:
             --registry-server index.docker.io \
             --registry-username ${{ secrets.DOCKER_USERNAME }} \
             --registry-password ${{ secrets.DOCKER_PASSWORD }}
+
