@@ -21,7 +21,7 @@ jobs:
             --name myappbackendv1 \
             --resource-group DEVOPS \
             --environment enviromentdevops \
-            --image ulises647/myapp_backend:1.0 \
+            --image ${{ secrets.DOCKER_USERNAME }}/myapp_backend:1.0 \
             --cpu 1 \
             --memory 2Gi \
             --ingress external \
