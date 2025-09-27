@@ -18,10 +18,10 @@ jobs:
       - name: Deploy Container App
         run: |
           az containerapp create \
-            --name myappbackv2 \
+            --name myappbackendv1 \
             --resource-group DEVOPS \
             --environment enviromentdevops \
-            --image ulises647/myapp:prod \
+            --image ulises647/myapp_backend:1.0 \
             --cpu 1 \
             --memory 2Gi \
             --ingress external \
