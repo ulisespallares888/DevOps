@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   getAllTasks,
   searchTasks,
@@ -45,15 +45,15 @@ function App() {
       setIsModalOpen(false);
     };
 
-  useEffect(() => {
-    fetchTasks();
-  }, [page]);
+    const fetchTasks = useCallback(async () => {
+        const data = await getAllTasks(page);
+        setTasks(data.content);
+        setTotalPages(data.totalPages);
+    }, [page]); // ✅ ahora depende solo de 'page'
 
-  const fetchTasks = async () => {
-    const data = await getAllTasks(page);
-    setTasks(data.content);
-    setTotalPages(data.totalPages);
-  };
+    useEffect(() => {
+        fetchTasks();
+    }, [fetchTasks]); // ✅ ya no da warning
 
   const handleCreateTask = async () => {
     if (newTask.title && newTask.description) {
