@@ -1,4 +1,4 @@
-// Local
+// Local env
 // const BASE_URL = "http://localhost:8080/api/v1/tasks";
 // docker-compose
 // const BASE_URL = "http://spring-backend:8080/api/v1/tasks";
