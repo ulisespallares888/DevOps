@@ -42,16 +42,6 @@ jobs:
         working-directory: webpage/web-app
         run: npm run build
 
-      # ---- Coverage to Codacy (si usas Jest con coverage) -----
-      - name: Upload coverage to Codacy
-        if: success()
-        env:
-          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
-        run: |
-          curl -Ls https://coverage.codacy.com/get.sh | bash
-          REPORTER=$(ls ~/.cache/codacy/coverage-reporter/*/codacy-coverage-reporter)
-          $REPORTER report -l JavaScript -r webpage/web-app/coverage/lcov.info
-
       # ---- Docker build & push ----
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
