@@ -1,0 +1,66 @@
+name: CI_Frontend
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'webpage/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'webpage/**'
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # ---- Node setup ----
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: webpage/package-lock.json
+
+      # ---- Install deps ----
+      - name: Install dependencies
+        working-directory: webpage
+        run: npm ci
+
+      # ---- Run tests ----
+      - name: Run tests
+        working-directory: webpage
+        run: npm test -- --watchAll=false
+
+      # ---- Build React app ----
+      - name: Build frontend
+        working-directory: webpage
+        run: npm run build
+
+      # ---- Coverage to Codacy (opcional, si usas Jest con coverage) ----
+      - name: Upload coverage to Codacy
+        if: success()
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        run: |
+          curl -Ls https://coverage.codacy.com/get.sh | bash
+          REPORTER=$(ls ~/.cache/codacy/coverage-reporter/*/codacy-coverage-reporter)
+          $REPORTER report -l JavaScript -r webpage/coverage/lcov.info
+
+      # ---- Docker build & push ----
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/myapp_frontend:1.0 ./webpage
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ secrets.DOCKER_USERNAME }}/myapp_frontend:1.0

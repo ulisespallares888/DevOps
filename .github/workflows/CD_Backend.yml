@@ -1,0 +1,36 @@
+name: Deploy Backend to Azure Container Apps
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'API/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy Container App
+        run: |
+          az containerapp create \
+            --name myappbackendv1 \
+            --resource-group DEVOPS \
+            --environment enviromentdevops \
+            --image ${{ secrets.DOCKER_USERNAME }}/myapp_backend:1.0 \
+            --cpu 1 \
+            --memory 2Gi \
+            --ingress external \
+            --target-port 8080 \
+            --registry-server index.docker.io \
+            --registry-username ${{ secrets.DOCKER_USERNAME }} \
+            --registry-password ${{ secrets.DOCKER_PASSWORD }}
+

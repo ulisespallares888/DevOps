@@ -3,8 +3,12 @@ name: Java CI with Maven, MySQL & Redis
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'API/**'
   pull_request:
     branches: [ "main" ]
+    paths:
+      - 'API/**'
 
 jobs:
   build-test:
