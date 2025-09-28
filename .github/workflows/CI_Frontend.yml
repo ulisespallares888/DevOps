@@ -27,17 +27,17 @@ jobs:
 
       # ---- Install deps ----
       - name: Install dependencies
-        working-directory: webpage
+        working-directory: webpage/web-app
         run: npm ci
 
       # ---- Run tests ----
       - name: Run tests
-        working-directory: webpage
+        working-directory: webpage/web-app
         run: npm test -- --watchAll=false
 
       # ---- Build React app ----
       - name: Build frontend
-        working-directory: webpage
+        working-directory: webpage/web-app
         run: npm run build
 
       # ---- Coverage to Codacy (opcional, si usas Jest con coverage) ----
