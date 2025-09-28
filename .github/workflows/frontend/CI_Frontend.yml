@@ -42,7 +42,7 @@ jobs:
         working-directory: webpage/web-app
         run: npm run build
 
-      # ---- Coverage to Codacy (si usas Jest con coverage) ----
+      # ---- Coverage to Codacy (si usas Jest con coverage) -----
       - name: Upload coverage to Codacy
         if: success()
         env:
