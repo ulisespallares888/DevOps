@@ -1,4 +1,4 @@
-name: Java CI with Maven, MySQL & Redis
+name: CI_Backend
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: Deploy Frontend to Azure Container Apps
+name: CD_Frontend_Azure_Container_Apps
 
 on:
   workflow_dispatch:
